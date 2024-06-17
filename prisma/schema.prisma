@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  priority    Priority @default(MEDIUM)
+  status      Status   @default(PENDING)
+  due_Date    DateTime
+  created_At  DateTime @default(now())
+  updated_At  DateTime @updatedAt
+
+  user        User   @relation(fields: [created_By], references: [id], onDelete: Cascade)
+  created_By  String
+  assigned_To User[] @relation("assigned_To")
+}
+
+enum Status {
+  COMPLETED
+  PENDING
+  FAILED
+}
+
+enum Priority {
+  HIGH
+  LOW
+  MEDIUM
+}
+
+enum Role {
+  ADMIN
+  USER
+  ROOT
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?
+  role          Role      @default(USER)
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  task          Task[]
+  assigned_Task Task[] @relation("assigned_To")
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
