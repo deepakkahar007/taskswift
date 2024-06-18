@@ -5,7 +5,6 @@ import Credentials from "next-auth/providers/credentials";
 import { GithubProfile } from "next-auth/providers/github";
 
 const options: NextAuthOptions = {
-  // adapter: PrismaAdapter(prisma),
   providers: [
     Github({
       profile(profile: GithubProfile) {
@@ -16,8 +15,8 @@ const options: NextAuthOptions = {
           image: profile.avatar_url,
         };
       },
-      clientId: process.env.GITHUB_CLIENT_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_SECRET,
     }),
     Credentials({
       name: "Credentials",
@@ -68,7 +67,7 @@ const options: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET!,
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 export default options;

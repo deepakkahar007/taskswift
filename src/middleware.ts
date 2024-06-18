@@ -12,13 +12,15 @@ export default withAuth(
     ) {
       return NextResponse.rewrite(new URL("/denied", req.url));
     }
-    if (
-      req.nextUrl.pathname.startsWith("/admin") &&
-      req.nextauth.token?.role !== "ADMIN" &&
-      req.nextauth.token?.role !== "ROOT"
-    ) {
-      return NextResponse.rewrite(new URL("/denied", req.url));
-    }
+    if (req.nextauth.token?.role === "ROOT")
+      return NextResponse.redirect(`${process.env.BASE_URL}/root`);
+    // if (
+    //   req.nextUrl.pathname.startsWith("/admin") &&
+    //   req.nextauth.token?.role !== "ADMIN" &&
+    //   req.nextauth.token?.role !== "ROOT"
+    // ) {
+    //   return NextResponse.rewrite(new URL("/denied", req.url));
+    // }
   },
   {
     callbacks: {
@@ -28,5 +30,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/root", "/admin"],
+  matcher: ["/root"],
 };
