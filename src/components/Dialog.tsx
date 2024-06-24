@@ -10,7 +10,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 const Test = () => {
   return (
@@ -19,11 +21,14 @@ const Test = () => {
         <Button>Trigger Dialog</Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogTitle>Dialog open</DialogTitle>
+        <DialogTitle>Create User</DialogTitle>
         <DialogDescription>Dialog opened by clicked</DialogDescription>
-      </DialogContent>
+        <Input type="text" placeholder="enter your name" />
 
-      <DialogClose>Close</DialogClose>
+        <DialogClose>
+          <Button variant={"destructive"}>Cancel</Button>
+        </DialogClose>
+      </DialogContent>
     </Dialog>
   );
 };

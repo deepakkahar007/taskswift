@@ -17,27 +17,10 @@ model Task {
   created_At  DateTime @default(now())
   updated_At  DateTime @updatedAt
 
-  user        User   @relation(fields: [created_By], references: [id], onDelete: Cascade)
-  created_By  String
-  assigned_To User[] @relation("assigned_To")
-}
+  user       User   @relation(fields: [created_By], references: [id], onDelete: Cascade)
+  created_By String
 
-enum Status {
-  COMPLETED
-  PENDING
-  FAILED
-}
-
-enum Priority {
-  HIGH
-  LOW
-  MEDIUM
-}
-
-enum Role {
-  ADMIN
-  USER
-  ROOT
+  tasks User[] @relation("assigned_Tasks")
 }
 
 model User {
@@ -54,9 +37,37 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  task          Task[]
-  assigned_Task Task[] @relation("assigned_To")
+  created_Tasks Task[]
+
+  assigned_Tasks Task[] @relation("assigned_Tasks")
 }
+
+enum Status {
+  COMPLETED
+  PENDING
+  IN_PROGRESS
+}
+
+enum Priority {
+  HIGH
+  LOW
+  MEDIUM
+}
+
+enum Role {
+  ADMIN
+  USER
+  ROOT
+}
+
+// model TaskOnUsers {
+//   task    Task @relation(fields: [task_Id], references: [id])
+//   user    User   @relation(fields: [user_Id], references: [id])
+//   task_Id Int
+//   user_Id String
+
+//   @@id([task_Id, user_Id])
+// }
 
 model Account {
   userId            String
