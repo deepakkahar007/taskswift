@@ -1,87 +1,100 @@
-import Test from "@/components/Dialog";
+import Cards from "@/components/Cards";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardFooter,
-  CardContent,
-} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-
-import Todo from "@/components/Todo";
-
 import { isAuthenticated } from "@/lib/utils";
-const tasks = [
-  { title: "first", desc: "first task" },
-  { title: "second", desc: "first task" },
-];
+import Link from "next/link";
+import { Denied } from "@/components";
+import { inProgressTasks as iPT, pendingTasks as pT } from "@/lib/dbQueries";
 
 export default async function Home() {
   const session = await isAuthenticated();
-  console.log(session);
+
+  const inProgressTasks = await iPT();
+  const pendingTasks = await pT();
+
   return (
-    <div className="grid grid-cols-3 text-center items-center">
-      <h1 className="uppercase text-xl ">todo</h1>
-      <h1 className="uppercase text-xl border-x-2 border-white">pending</h1>
-      <h1 className="uppercase text-xl ">completed</h1>
+    <div className="">
+      {session != null ?? (
+        <h1 className={`capitalize" bg-green-700 p-1 text-xl font-bold`}>
+          Hello {session?.user.name}
+        </h1>
+      )}
 
-      <Todo />
-      <div className="border-x-2 border-white min-h-screen">
-        <Separator
-          orientation="vertical"
-          className="flex text-center justify-center w-[20rem] h-[0.250rem] bg-gray-400"
-        />
-        {tasks.map((t) => {
-          return (
-            <div
-              key={t.title}
-              className="flex flex-col space-y-2 justify-center items-center mt-3"
-            >
-              <Card className="border border-blue-700 w-72 rounded-md p-1 ">
-                <CardHeader>
-                  <CardTitle>{t.title}</CardTitle>
-                </CardHeader>
-
-                <CardContent>{t.desc}</CardContent>
-
-                <CardFooter className="flex flex-row space-x-2 items-end justify-end">
-                  <Button variant={"destructive"}>Delete</Button>
-                  <Button>completed</Button>
-                </CardFooter>
-              </Card>
+      {session ? (
+        <>
+          <div className="my-2 rounded-md border border-blue-600 p-2">
+            <div className="flex w-full">
+              <div className="flex w-full justify-between">
+                <h2 className="text-xl capitalize underline underline-offset-4">
+                  In Progress tasks
+                </h2>
+                <Link href={"/task"}>
+                  <Button variant={"link"} className="text-xl capitalize">
+                    go to tasks
+                  </Button>
+                </Link>
+              </div>
             </div>
-          );
-        })}
-      </div>
-      <div className=" min-h-screen">
-        <Separator
-          orientation="vertical"
-          className="flex text-center justify-center w-[20rem] h-[0.250rem] bg-gray-400"
-        />
-        {tasks.map((t) => {
-          return (
-            <div
-              key={t.title}
-              className="flex flex-col space-y-2 justify-center items-center mt-3"
-            >
-              <Card className="border border-blue-700 w-72 rounded-md p-1 ">
-                <CardHeader>
-                  <CardTitle>{t.title}</CardTitle>
-                </CardHeader>
+            <Separator orientation="horizontal" className="bg-gray-500" />
+            <section className="my-2 flex flex-row space-x-3">
+              {inProgressTasks.length != 0 ? (
+                inProgressTasks.map((c) => (
+                  <Cards
+                    key={c.title}
+                    w={"330px"}
+                    title={c.title}
+                    content={c.content}
+                    description={c.description}
+                    footer={c.footer}
+                  />
+                ))
+              ) : (
+                <h1 className="justify-center text-center text-2xl text-white">
+                  No task to do right now ...
+                </h1>
+              )}
+            </section>
+            <Separator orientation="horizontal" className="bg-gray-500" />
+          </div>
 
-                <CardContent>{t.desc}</CardContent>
-
-                <CardFooter className="flex flex-row space-x-2 items-end justify-end">
-                  <Button variant={"destructive"}>Delete</Button>
-                  <Button>completed</Button>
-                </CardFooter>
-              </Card>
+          <div className="my-2 rounded-md border border-blue-600 p-2">
+            <div className="flex w-full">
+              <div className="flex w-full justify-between">
+                <h2 className="text-xl capitalize underline underline-offset-4">
+                  Pending tasks
+                </h2>
+                <Link href={"/task"}>
+                  <Button variant={"link"} className="text-xl capitalize">
+                    go to tasks
+                  </Button>
+                </Link>
+              </div>
             </div>
-          );
-        })}
-      </div>
+            <Separator orientation="horizontal" className="bg-gray-500" />
+            <section className="my-2 flex flex-row space-x-3">
+              {pendingTasks.length != 0 ? (
+                pendingTasks.map((c) => (
+                  <Cards
+                    key={c.title}
+                    w={"330px"}
+                    title={c.title}
+                    content={c.content}
+                    description={c.description}
+                    footer={c.footer}
+                  />
+                ))
+              ) : (
+                <h1 className="justify-center text-center text-2xl text-white">
+                  No task to do right now ...
+                </h1>
+              )}
+            </section>
+            <Separator orientation="horizontal" className="bg-gray-500" />
+          </div>
+        </>
+      ) : (
+        <Denied />
+      )}
     </div>
   );
 }

@@ -11,7 +11,7 @@ import options from "@/app/api/auth/[...nextauth]/options";
 
 export const isAuthenticated = async () => {
   const session = await getServerSession(options);
-  return session ?? null;
+  return session ? session : null;
 };
 
 // bcrypt js

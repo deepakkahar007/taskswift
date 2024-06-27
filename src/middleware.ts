@@ -6,17 +6,21 @@ export default withAuth(
     // console.log("the nexturl pathname ", req.nextUrl.pathname);
     // console.log("token info : ", req.nextauth.token);
 
+    if (req.nextauth.token?.role === "ROOT") {
+      return NextResponse.redirect(`${process.env.BASE_URL}/root`);
+    }
+
     if (
       req.nextUrl.pathname.startsWith("/root") &&
       req.nextauth.token?.role !== "ROOT"
     ) {
       return NextResponse.rewrite(new URL("/denied", req.url));
     }
-    if (req.nextauth.token?.role === "ROOT")
-      return NextResponse.redirect(`${process.env.BASE_URL}/root`);
+
     // if (
-    //   req.nextUrl.pathname.startsWith("/admin") &&
+    //   req.nextUrl.pathname.startsWith("/") &&
     //   req.nextauth.token?.role !== "ADMIN" &&
+    //   req.nextauth.token?.role !== "USER" &&
     //   req.nextauth.token?.role !== "ROOT"
     // ) {
     //   return NextResponse.rewrite(new URL("/denied", req.url));
@@ -26,7 +30,7 @@ export default withAuth(
     callbacks: {
       authorized: ({ token }) => !!token,
     },
-  }
+  },
 );
 
 export const config = {

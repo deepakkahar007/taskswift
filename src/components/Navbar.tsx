@@ -4,29 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
-import {
-  Dialog,
-  DialogPortal,
-  DialogOverlay,
-  DialogTrigger,
-  DialogClose,
-  DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import { Input } from "./ui/input";
-import { CardWithForm } from "./CreateTask";
-
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { signOut, signIn } from "next-auth/react";
 
 type NavBarLinks = {
   title: string;
@@ -41,6 +19,7 @@ const Nav: NavBarLinks = [
 ];
 
 const Navbar = () => {
+  const session = true;
   return (
     <header className="flex items-center justify-between p-4 shadow shadow-blue-600">
       <div>
@@ -50,17 +29,17 @@ const Navbar = () => {
       <nav className="flex items-center justify-center space-x-4">
         {Nav.map(({ title, url, icon }) => {
           return (
-            <span key={title} className="flex items-center space-x-4 text-md ">
+            <span key={title} className="text-md flex items-center space-x-4">
               <Separator
                 orientation="vertical"
-                className="mx-2 text-white bg-white h-6 w-[0.090rem]"
+                className="mx-2 h-6 w-[0.090rem] bg-white text-white"
               />
               <Link
                 href={url}
                 className={
                   url === usePathname()
-                    ? "uppercase underline underline-offset-8 decoration-blue-600 font-bold"
-                    : "uppercase hover:underline underline-offset-8 decoration-blue-600 hover:font-bold"
+                    ? "font-bold uppercase underline decoration-blue-600 underline-offset-8"
+                    : "uppercase decoration-blue-600 underline-offset-8 hover:font-bold hover:underline"
                 }
               >
                 {icon ?? <span>{icon}</span>}
@@ -71,59 +50,63 @@ const Navbar = () => {
         })}
         <Separator
           orientation="vertical"
-          className="mx-2 text-white bg-white h-6 w-[0.090rem]"
+          className="mx-2 h-6 w-[0.090rem] bg-white text-white"
         />
       </nav>
 
-      <Dialog>
-        <DialogTrigger>
-          <Button>Trigger Dialog</Button>
-        </DialogTrigger>
-        <DialogContent>
-          {/* <DialogHeader>
-            <DialogTitle>Create User</DialogTitle>
-          </DialogHeader>
-          <DialogDescription>Dialog opened by clicked</DialogDescription>
-          name
-          <Input type="text" placeholder="enter your name" />
-          description
-          <Input type="text" placeholder="enter your name" />
-          email
-          <Input type="text" placeholder="enter your name" />
-          <DialogFooter>
-            <DialogClose>
-              <Button variant={"destructive"}>Cancel</Button>
-            </DialogClose>
-          </DialogFooter> */}
-          <form>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" placeholder="Name of your project" />
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="framework">Framework</Label>
-                <Select>
-                  <SelectTrigger id="framework">
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    <SelectItem value="next">Next.js</SelectItem>
-                    <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                    <SelectItem value="astro">Astro</SelectItem>
-                    <SelectItem value="nuxt">Nuxt.js</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </form>
-          <DialogFooter className="flex justify-between">
-            <Button variant="outline">Cancel</Button>
-            <Button>Deploy</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {session === null ? (
+        <Button onClick={() => signOut()}>Log Out</Button>
+      ) : (
+        <Button onClick={() => signIn()}>Log In</Button>
+      )}
+      <Button onClick={() => signOut()}>Log Out</Button>
     </header>
   );
 };
 export default Navbar;
+{
+  /* <Dialog>
+          <DialogTrigger>
+            <Button>Trigger Dialog</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <form action={createTask}>
+              <div className="grid w-full items-center gap-4">
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="title">Title</Label>
+                  <Input id="title" placeholder="Enter Tasks" />
+                </div>
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea placeholder="Enter task description" />
+                </div>
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="priority">Priority</Label>
+                  <Select>
+                    <SelectTrigger id="priority">
+                      <SelectValue placeholder="priority" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value="HIGH">High</SelectItem>
+                      <SelectItem value="LOW">Low</SelectItem>
+                      <SelectItem value="MEDIUM">Medium</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    type="date"
+                    name="date"
+                    className="rounded-md border shadow"
+                  />
+                </div>
+              </div>
+
+              <Button>Deploy</Button>
+            </form>
+            <DialogFooter className="mt-2 flex justify-between">
+              <DialogClose>
+                <Button variant="outline">Cancel</Button>
+              </DialogClose>{" "}
+            </DialogFooter>
+          </DialogContent>
+        </Dialog> */
+}
