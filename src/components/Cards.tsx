@@ -26,8 +26,7 @@ type CardsPropType = {
   image?: string;
 };
 
-const Cards = ({ data }: { data: CardsPropType }) => {
-  const { title, description, content, footer, w } = data;
+const Cards = ({ title, description, content, footer, w }: CardsPropType) => {
   return (
     <Dialog>
       <DialogTrigger>

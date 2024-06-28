@@ -1,26 +1,21 @@
 import prisma from "@/db/prisma";
 import { isAuthenticated } from "./utils";
 
+export const getUserName = async (createdId: string) => {
+  const name = await prisma.user.findFirst({
+    select: {
+      name: true,
+    },
+    where: {
+      id: "clxsjvo200001enl8devons0j",
+    },
+  });
+  return name;
+};
+
 export const allTasksById = async () => {
   const session = await isAuthenticated();
   const progressTasks = await prisma.task.findMany({
-    where: {
-      status: "IN_PROGRESS",
-    },
-    include: {
-      tasks: {
-        where: {
-          id: {
-            equals: session?.user.id,
-          },
-        },
-      },
-    },
-  });
-  const pendingTasks = await prisma.task.findMany({
-    where: {
-      status: "PENDING",
-    },
     include: {
       tasks: {
         where: {
@@ -32,7 +27,7 @@ export const allTasksById = async () => {
     },
   });
 
-  return { progressTasks, pendingTasks };
+  return { progressTasks };
 };
 
 export const inProgressTasks = async () => {

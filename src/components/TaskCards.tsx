@@ -40,42 +40,42 @@ const TaskCards = ({
   updated_At,
   created_By,
 }: CardsPropType) => {
+  function priority_Color(priority: string) {
+    if (priority === "HIGH") return "border-red-600";
+    if (priority === "MEDIUM") return "border-yellow-600";
+  }
+
   return (
     <Dialog>
       <DialogTrigger>
-        <Card className={`cursor-pointer items-center hover:border-blue-600`}>
+        <Card
+          className={`cursor-pointer items-center hover:border-blue-600 ${priority_Color(priority!)}`}
+        >
           <CardHeader>
             <CardTitle>{title}</CardTitle>
           </CardHeader>
 
-          <CardContent>
-            {description}
-
-            {description ?? (
-              <CardDescription className="truncate">
-                {description}
-              </CardDescription>
-            )}
-          </CardContent>
-
           <CardFooter>
-            <p>{due_Date?.toISOString().split("T")[0]}</p>
+            <p className="text-sm text-slate-400">
+              {due_Date?.toISOString().split("T")[0]}
+            </p>
           </CardFooter>
         </Card>
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <Label>What to do</Label>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <Label>How to do</Label>
-        <DialogDescription>{description}</DialogDescription>
 
-        <DialogFooter>
+        <DialogDescription>
+          <p>{description}</p>
+          <span>Priority - {priority}</span>
           <p>
             {due_Date?.getDay()} {due_Date?.toISOString().split("T")[0]}
           </p>
+        </DialogDescription>
+        <DialogFooter>
           <Button>Mark as Completed</Button>
         </DialogFooter>
       </DialogContent>
